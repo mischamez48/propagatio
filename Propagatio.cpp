@@ -5,6 +5,7 @@ using namespace std;
 vector<vector<bool>>lire_matrice(int n);
 void tache_1();
 //void printMatriceInital(const vector<vector<bool>>& matInit, int n);
+vector<vector<bool>>construire_matAdj(const vector<vector>>& MatInit,int n);
 
 int main(){	
 	
@@ -27,7 +28,7 @@ void tache_1(){
 	cin >> n >> m;
 	if(n!=m){
 		exit(0);
-	}
+	}construire_matAdj
 	
 	//printMatriceInital(lire_matrice(n), n);
 	
@@ -55,4 +56,7 @@ vector<vector<bool>>lire_matrice(int n){
 
 }*/
 
+vector<vector<bool>>construire_matAdj(const vector<vector>>& MatInit,int n){
+	//constuire matrice
+}
 
