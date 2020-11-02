@@ -132,4 +132,5 @@ void printPbm(const vector<vector<bool>>& mat, int n) {
 			cout << mat[i][j];
 		}cout << endl;
 	}cout << endl;
+	DEBUG("I HATE DOGS");
 }
