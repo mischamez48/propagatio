@@ -15,7 +15,7 @@ int main(){
 void tache_1(){
 	
 	char pbm[3];//by convention the end of strings represented in character sequences is signed by '\0'
-	unsigned int n(0);//colonnes
+	unsigned int n(0);//colonnes message
 	unsigned int m(0);//lignes
 	
 	cin >> pbm;
