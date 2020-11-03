@@ -1,12 +1,16 @@
 #include <iostream>
 #include <vector>
+#include <string>
 
 using namespace std;
 
 vector<vector<bool>>lire_matrice(int n);
 void check(int i, vector<bool>& visited ,vector<vector<bool>> matAdj, int n);
 vector<vector<bool>> tache_1(unsigned int& n);
-void tache_2(vector<vector<bool>>matAdj, int n);
+vector<bool> tache_2(vector<vector<bool>>matAdj, int n);
+void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n);
+void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, string& msg, int n);
+bool contains(vector<int> v, int x);
 void printMatrice(const vector<vector<bool>>& mat, int n);
 void printPbm(const vector<vector<bool>>& mat, int n);
 void DEBUG_ERR(const char x[]);
@@ -19,7 +23,9 @@ int main() {
 
 	vector<vector<bool>>matAdj = tache_1(n);
 
-	tache_2(matAdj, n);
+	vector<bool> visited = tache_2(matAdj, n);
+
+	tache_3(visited, matAdj, n);
 
 }
 
@@ -49,7 +55,7 @@ vector<vector<bool>> tache_1(unsigned int& n) {
 	return construire_matAdj(lire_matrice(n), n);
 }
 
-void tache_2(vector<vector<bool>> matAdj, int n) {
+vector<bool> tache_2(vector<vector<bool>> matAdj, int n) {
 	vector<bool> visited(n);				// Init tab visited
 	for (int i(0); i < n; i++) {
 		visited[i] = false;					// Tous les elems a false
@@ -74,8 +80,49 @@ void tache_2(vector<vector<bool>> matAdj, int n) {
 		}
 	}
 
-	DEBUG("PLS HELP ME");					// Desespoir de la recursivité
+	return visited;
 }
+
+void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
+	for (int i(0); i < n; i++) {
+		visited[i] = false;						// Ré-init visited à false
+	}
+
+	vector<int> initDep(1);
+	initDep[0] = 0;								// Ensemble de départ contient noeud 0 uniquement
+
+	string msg = "0\n";							// Impression du noeud 0 toujours présent
+
+	recursio(initDep, matAdj, visited, msg, n);	// Appel de la récursion avec ensemble {0} de départ
+
+	msg.erase(msg.size() - 1, msg.size() - 1);	// Pour éffacer le deuxième retour à la ligne à la fin du message
+
+	for (int i(0); i < msg.size(); i++) {		// Impression du message (degré de séparation)
+		cout << msg[i];
+	}
+}
+
+void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, string& msg, int n) {
+	if (dep.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
+		vector<int> tmp;						// Ensemble temporaire
+		string tmpS = "";
+		for (int i = 0; i < dep.size(); i++) {
+			visited[dep[i]] = true;				// Ligne du noeud dans l'ensemble de départ à été visité
+			for (int j(0); j < n; j++) {
+				if (matAdj[dep[i]][j] == true && visited[j] == false && !contains(dep, j)) {
+					tmpS = to_string(j);		// Cast du noeud en string
+					msg.append(tmpS);			// On ajout le noeud au message
+					msg.append(" ", 1);			// On ajout 1 fois un espace
+					tmp.push_back(j);			// On met le noeud dans l'ensemble temporaire
+				}
+			}
+		}
+		msg.push_back('\n');					// Retour à la ligne afin de délimiter le degré de séparation
+		
+		recursio(tmp, matAdj, visited, msg, n);	// On rappelle la fonction avec l'ensemble temporaire
+	}
+}
+
 
 
 vector<vector<bool>>lire_matrice(int n) {
@@ -134,14 +181,21 @@ vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n
 }
 
 
-/*
-* Fonctions constantes utiles pour déboguer
-*/
+///	FONCTIONS UTILES A DEBOGUER
+/// 
 void DEBUG_ERR(const char x[]) {
 	cerr << x << endl;
 }
 void DEBUG(const char x[]) {
 	cout << x << endl;
+}
+bool contains(vector<int> v, int x) {
+	if (std::find(v.begin(), v.end(), x) != v.end()) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 void printMatrice(const vector<vector<bool>>& mat, int n) {
 	for (int i(0); i < n; ++i) {
