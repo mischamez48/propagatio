@@ -4,16 +4,17 @@
 using namespace std;
 
 vector<vector<bool>>lire_matrice(int n);
-vector<vector<bool>> tache_1(int n);
+void check(int i, vector<bool>& visited ,vector<vector<bool>> matAdj, int n);
+vector<vector<bool>> tache_1(unsigned int& n);
 void tache_2(vector<vector<bool>>matAdj, int n);
 void printMatrice(const vector<vector<bool>>& mat, int n);
 void printPbm(const vector<vector<bool>>& mat, int n);
-void DEBUG_ERR(char x[]);
-void DEBUG(char x[]);
+void DEBUG_ERR(const char x[]);
+void DEBUG(const char x[]);
 vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n);
 
 int main() {
-	int n;
+	unsigned int n(0);	// Colonnes
 
 
 	vector<vector<bool>>matAdj = tache_1(n);
@@ -24,11 +25,10 @@ int main() {
 
 
 
-vector<vector<bool>> tache_1(int n) {
+vector<vector<bool>> tache_1(unsigned int& n) {
 
-	char pbm[3];			//par convention les tableaux de char se terminent par le delimiteur '\0' prenant donc la derniere pos du tableau
-	unsigned int n(0);		//colonnes
-	unsigned int m(0);		//lignes
+	char pbm[3];			// Par convention les tableaux de char se terminent par le delimiteur '\0' prenant donc la derniere pos du tableau
+	unsigned int m(0);		// Lignes
 
 	cin >> pbm;
 	if (!(pbm[0] == 'P' && pbm[1] == '1' && pbm[2] == '\0')) { //3.2.1.2
@@ -46,19 +46,35 @@ vector<vector<bool>> tache_1(int n) {
 
 	//printMatrice(lire_matrice(n), n);
 
-	vector<vector<bool>>matrice_adjacente = construire_matAdj(lire_matrice(n), n);
-
-	//printMatrice(matrice_adjacente, n);
-	printPbm(matrice_adjacente, n); // Imprime sur la console le format complet pbm avec les infos d'entete
-
-	DEBUG("MatAdjFait");
+	return construire_matAdj(lire_matrice(n), n);
 }
 
 void tache_2(vector<vector<bool>> matAdj, int n) {
-	vector<bool> visited(n);
+	vector<bool> visited(n);				// Init tab visited
 	for (int i(0); i < n; i++) {
-		visited[i] = false;
+		visited[i] = false;					// Tous les elems a false
 	}
+
+	int initInt(0);							// Variable pour 1er appel de check()
+
+	for (int i(0); i < n; i++) {
+		for (int j(0); j < n; j++) {
+			if (matAdj[i][j] == true) {
+				initInt = i;				// Si un elem sur ligne i de matAdj est vrai, commencer check par i
+			}
+		}
+	}
+
+	check(initInt, visited, matAdj, n);		// Premier appel de la fonction recursive
+
+	for (int i(0); i < n; i++) {			// Verification que visited contienne que des true
+		if (visited[i] == false) {
+			DEBUG_ERR("DO ERROR MSG 3.1.2");// Sinon arret du programme car matAdj non connexe
+			exit(0);
+		}
+	}
+
+	DEBUG("PLS HELP ME");					// Desespoir de la recursivité
 }
 
 
@@ -80,6 +96,15 @@ vector<vector<bool>>lire_matrice(int n) {
 		}
 	}
 	return matInit;									// Retourne la matrice du fichier pre-adj
+}
+
+void check(int i, vector<bool>& visited, vector<vector<bool>> matAdj, int n) {
+	visited[i] = true;										// Passer ligne en vrai grace à la verification the initInt
+	for (int j = 0; j < n; j++) {
+		if (matAdj[i][j] == true && visited[j] == false) {	// Si on trouve un noeud voisin qui n'a pas été vérifié,
+			check(j, visited, matAdj, n);					// on cherche les voisins de celui-ci
+		}
+	}
 }
 
 vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n) {
@@ -112,10 +137,10 @@ vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n
 /*
 * Fonctions constantes utiles pour déboguer
 */
-void DEBUG_ERR(char x[]) {
+void DEBUG_ERR(const char x[]) {
 	cerr << x << endl;
 }
-void DEBUG(char x[]) {
+void DEBUG(const char x[]) {
 	cout << x << endl;
 }
 void printMatrice(const vector<vector<bool>>& mat, int n) {
