@@ -50,21 +50,31 @@ vector<vector<bool>> tache_1(unsigned int& n) {
 }
 
 void tache_2(vector<vector<bool>> matAdj, int n) {
-	vector<bool> visited(n);
+	vector<bool> visited(n);				// Init tab visited
 	for (int i(0); i < n; i++) {
-		visited[i] = false;
+		visited[i] = false;					// Tous les elems a false
 	}
 
-	check(0, visited, matAdj, n);
+	int initInt(0);							// Variable pour 1er appel de check()
 
 	for (int i(0); i < n; i++) {
+		for (int j(0); j < n; j++) {
+			if (matAdj[i][j] == true) {
+				initInt = i;				// Si un elem sur ligne i de matAdj est vrai, commencer check par i
+			}
+		}
+	}
+
+	check(initInt, visited, matAdj, n);		// Premier appel de la fonction recursive
+
+	for (int i(0); i < n; i++) {			// Verification que visited contienne que des true
 		if (visited[i] == false) {
-			DEBUG_ERR("DO ERROR MSG 3.1.2");
+			DEBUG_ERR("DO ERROR MSG 3.1.2");// Sinon arret du programme car matAdj non connexe
 			exit(0);
 		}
 	}
 
-	DEBUG("PLS HELP ME");
+	DEBUG("PLS HELP ME");					// Desespoir de la recursivité
 }
 
 
@@ -89,10 +99,10 @@ vector<vector<bool>>lire_matrice(int n) {
 }
 
 void check(int i, vector<bool>& visited, vector<vector<bool>> matAdj, int n) {
-	visited[i] = true;
+	visited[i] = true;										// Passer ligne en vrai grace à la verification the initInt
 	for (int j = 0; j < n; j++) {
-		if (matAdj[i][j] == true && visited[j] == false) {
-			check(j, visited, matAdj, n);
+		if (matAdj[i][j] == true && visited[j] == false) {	// Si on trouve un noeud voisin qui n'a pas été vérifié,
+			check(j, visited, matAdj, n);					// on cherche les voisins de celui-ci
 		}
 	}
 }
