@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -95,9 +96,10 @@ void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
 
 	recursio(initDep, matAdj, visited, msg, n);	// Appel de la récursion avec ensemble {0} de départ
 
-	msg.erase(msg.size() - 1, msg.size() - 1);	// Pour éffacer le deuxième retour à la ligne à la fin du message
-
-	for (int i(0); i < msg.size(); i++) {		// Impression du message (degré de séparation)
+	msg.erase(msg.size() - 1);	// Pour éffacer le deuxième retour à la ligne à la fin du message
+	
+	
+	for (unsigned int i(0); i < msg.size(); i++) {		// Impression du message (degré de séparation)
 		cout << msg[i];
 	}
 }
@@ -106,7 +108,7 @@ void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visit
 	if (dep.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
 		vector<int> tmp;						// Ensemble temporaire
 		string tmpS = "";
-		for (int i = 0; i < dep.size(); i++) {
+		for (unsigned int i = 0; i < dep.size(); i++) {
 			visited[dep[i]] = true;				// Ligne du noeud dans l'ensemble de départ à été visité
 			for (int j(0); j < n; j++) {
 				if (matAdj[dep[i]][j] == true && visited[j] == false && !contains(dep, j)) {
@@ -114,6 +116,7 @@ void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visit
 					msg.append(tmpS);			// On ajout le noeud au message
 					msg.append(" ", 1);			// On ajout 1 fois un espace
 					tmp.push_back(j);			// On met le noeud dans l'ensemble temporaire
+					visited[j]= true;
 				}
 			}
 		}
@@ -190,7 +193,7 @@ void DEBUG(const char x[]) {
 	cout << x << endl;
 }
 bool contains(vector<int> v, int x) {
-	if (std::find(v.begin(), v.end(), x) != v.end()) {
+	if (find(v.begin(), v.end(), x) != v.end()){
 		return true;
 	}
 	else {
