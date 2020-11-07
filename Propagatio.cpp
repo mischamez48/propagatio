@@ -10,7 +10,7 @@ void check(int i, vector<bool>& visited ,vector<vector<bool>> matAdj, int n);
 vector<vector<bool>> tache_1(unsigned int& n);
 vector<bool> tache_2(vector<vector<bool>>matAdj, int n);
 void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n);
-void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, string& msg, int n);
+void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, int n);
 bool contains(vector<int> v, int x);
 void printMatrice(const vector<vector<bool>>& mat, int n);
 void printPbm(const vector<vector<bool>>& mat, int n);
@@ -92,37 +92,31 @@ void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
 	vector<int> initDep(1);
 	initDep[0] = 0;								// Ensemble de départ contient noeud 0 uniquement
 
-	string msg = "0\n";							// Impression du noeud 0 toujours présent
+	cout << "0";							//commence toujours pas le noed 0, donc afficher 0	
 
-	recursio(initDep, matAdj, visited, msg, n);	// Appel de la récursion avec ensemble {0} de départ
+	recursio(initDep, matAdj, visited, n);	//Appel de la récursion avec ensemble {0} de départ
 
-	msg.erase(msg.size() - 1);	// Pour éffacer le deuxième retour à la ligne à la fin du message
-	
-	
-	for (unsigned int i(0); i < msg.size(); i++) {		// Impression du message (degré de séparation)
-		cout << msg[i];
-	}
+		
 }
 
-void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, string& msg, int n) {
+void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, int n) {
 	if (dep.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
 		vector<int> tmp;						// Ensemble temporaire
-		string tmpS = "";
-		for (unsigned int i = 0; i < dep.size(); i++) {
+		cout << endl;
+		for (unsigned int i(0); i < dep.size(); ++i) {
 			visited[dep[i]] = true;				// Ligne du noeud dans l'ensemble de départ à été visité
 			for (int j(0); j < n; j++) {
-				if (matAdj[dep[i]][j] == true && visited[j] == false && !contains(dep, j)) {
-					tmpS = to_string(j);		// Cast du noeud en string
-					msg.append(tmpS);			// On ajout le noeud au message
-					msg.append(" ", 1);			// On ajout 1 fois un espace
+				if (matAdj[dep[i]][j] == true && visited[j] == false && !contains(dep, j)) {		
 					tmp.push_back(j);			// On met le noeud dans l'ensemble temporaire
 					visited[j]= true;
 				}
 			}
 		}
-		msg.push_back('\n');					// Retour à la ligne afin de délimiter le degré de séparation
-		
-		recursio(tmp, matAdj, visited, msg, n);	// On rappelle la fonction avec l'ensemble temporaire
+		sort(tmp.begin(), tmp.end());
+		for(auto element : tmp){
+			cout << element << " ";
+		}
+		recursio(tmp, matAdj, visited, n);	// On rappelle la fonction avec l'ensemble temporaire
 	}
 }
 
