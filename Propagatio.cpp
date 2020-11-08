@@ -5,6 +5,12 @@
 
 using namespace std;
 
+const string P1("P1 missing or incorrect");
+const string WRONG_NB_COL_LGN("Nb columns and/or nb lines incorrect");
+const string MATRIX_SQUARE("Matrix is not square");
+const string IRREGULAR_CONTENT("Matrix description with incorrect content");
+const string DISCONNECTED_GRAPH("Matrix corresponds to a disconnected graph");
+
 vector<vector<bool>>lire_matrice(int n);
 void check(int i, vector<bool>& visited ,vector<vector<bool>> matAdj, int n);
 vector<vector<bool>> tache_1(unsigned int& n);
@@ -39,13 +45,18 @@ vector<vector<bool>> tache_1(unsigned int& n) {
 
 	cin >> pbm;
 	if (!(pbm[0] == 'P' && pbm[1] == '1' && pbm[2] == '\0')) { //3.2.1.2
+		cout << P1 <<endl;
 		exit(0);
 	}
 	//DEBUG(pbm);
 
 	cin >> n >> m;
-	if (n != m || n <= 0 || m <= 0) {// colonnes et lignes doivent être positifs
-		DEBUG_ERR("Entree infos d'entete incorrectes");
+	if (n == 0 || m == 0) {// colonnes et lignes doivent être strictements positifs
+		cout << WRONG_NB_COL_LGN << endl;
+		//DEBUG_ERR("Entree infos d'entete incorrectes");
+		exit(0);
+	}else if(n!=m){
+		cout << MATRIX_SQUARE << endl;
 		exit(0);
 	}
 
@@ -76,7 +87,8 @@ vector<bool> tache_2(vector<vector<bool>> matAdj, int n) {
 
 	for (int i(0); i < n; i++) {			// Verification que visited contienne que des true
 		if (visited[i] == false) {
-			DEBUG_ERR("DO ERROR MSG 3.1.2");// Sinon arret du programme car matAdj non connexe
+			cout << DISCONNECTED_GRAPH <<endl;
+			//DEBUG_ERR("DO ERROR MSG 3.1.2");// Sinon arret du programme car matAdj non connexe
 			exit(0);
 		}
 	}
@@ -133,7 +145,8 @@ vector<vector<bool>>lire_matrice(int n) {
 		for (size_t j(0); j < matInit.size(); ++j) {
 			cin >> input;
 			if (input > 1) {						// Si la valeur donnée en input n'est pas de type bool
-				DEBUG_ERR("valeur incorrecte");		// Avertir et imprimer erreur
+				cout << IRREGULAR_CONTENT <<endl;
+				//DEBUG_ERR("valeur incorrecte");		// Avertir et imprimer erreur
 				exit(0);
 			}
 			matInit[i][j] = input;					// Place les 0 et 1 dans matrice (pas besoin de cast)
