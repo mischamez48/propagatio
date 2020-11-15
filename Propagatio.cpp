@@ -125,8 +125,11 @@ void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visit
 			}
 		}
 		sort(tmp.begin(), tmp.end());
-		for(auto element : tmp){
-			cout << element << " ";
+		for(unsigned int i(0); i<tmp.size(); ++i){
+			cout << tmp[i];
+			if ( !(i==(tmp.size()-1))){
+				cout << " ";
+			}
 		}
 		recursio(tmp, matAdj, visited, n);	// On rappelle la fonction avec l'ensemble temporaire
 	}
