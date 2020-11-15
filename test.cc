@@ -23,7 +23,7 @@ void printPbm(const vector<vector<bool>>& mat, int n);
 void DEBUG_ERR(const char x[]);
 void DEBUG(const char x[]);
 vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n);
-void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n);
+void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<vector<int>>& sepp);
 
 int main() {
 	unsigned int n(0);	// Colonnes
@@ -35,7 +35,6 @@ int main() {
 
 	tache_3(visited, matAdj, n);
 	
-	tache_4(visited,matAdj, n);
 
 }
 
@@ -108,22 +107,25 @@ void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
 	vector<vector<int>> sepp;
 	initDep[0] = 0;								// Ensemble de départ contient noeud 0 uniquement
 
-	cout << "0";							//commence toujours pas le noed 0, donc afficher 0	
+	cout << "0" <<endl;							//commence toujours pas le noed 0, donc afficher 0	
 
 	recursio(initDep, matAdj, visited, n, sepp);	//Appel de la récursion avec ensemble {0} de départ
 
 	for (unsigned int i(0); i < sepp.size(); ++i) {
 		for (unsigned j(0); j < sepp[i].size(); ++j) {
 			cout << sepp[i][j];
+			if(!(j==(sepp.size()-1))){
+				cout << " ";
+			}
 		}cout << endl;
 	}cout << endl;
 		
+	tache_4(visited, matAdj, n, sepp);
 }
 
 void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& visited, int n,vector<vector<int>>& sepp) {
 	if (depart.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
 		vector<int> arrivee;						// Ensemble temporaire
-		cout << endl;
 		for (unsigned int i(0); i < depart.size(); ++i) {
 			visited[depart[i]] = true;				// Ligne du noeud dans l'ensemble de départ à été visité
 			for (int j(0); j < n; j++) {
@@ -134,18 +136,18 @@ void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& vi
 			}
 		}
 		sort(arrivee.begin(), arrivee.end());
-		
+		if(arrivee.size()!=0){
 		sepp.push_back(arrivee);
-		
 		recursio(arrivee, matAdj, visited, n, sepp);	// On rappelle la fonction avec l'ensemble temporaire
+		}
+		
 	}
 }
 
-void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n){
+void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<vector<int>>& sepp ){
 	
 	vector<double> distance_moyenne(n);
 	double moyenne(0);
-	vector<vector<int>> sepp;
 	
 	for(unsigned int i(0); i<visited.size(); ++i){
 		vector<int>initDep(1);
