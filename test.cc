@@ -148,6 +148,9 @@ void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<v
 	
 	vector<double> distance_moyenne(n);
 	double moyenne(0);
+	for (int i(0); i < n; i++) {
+		visited[i] = false;						// Ré-init visited à false
+	}
 	
 	for(unsigned int i(0); i<visited.size(); ++i){
 		vector<int>initDep(1);
@@ -155,8 +158,8 @@ void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<v
 		
 		recursio(initDep, matAdj, visited, n, sepp);
 		
-		for(int j(0); i<sepp.size();++j){
-			distance_moyenne[i]+= (sepp[j].size()*(j+1))/n-1;
+		for(unsigned int j(0); j<sepp.size();++j){
+			distance_moyenne[i]+= (sepp[i].size()*(j+1))/n-1;
 		}
 		moyenne+=distance_moyenne[i]/4;
 	}
