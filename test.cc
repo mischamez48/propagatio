@@ -23,7 +23,7 @@ void printPbm(const vector<vector<bool>>& mat, int n);
 void DEBUG_ERR(const char x[]);
 void DEBUG(const char x[]);
 vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n);
-void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<vector<int>>& sepp);
+void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n);
 
 int main() {
 	unsigned int n(0);	// Colonnes
@@ -34,6 +34,8 @@ int main() {
 	vector<bool> visited = tache_2(matAdj, n);
 
 	tache_3(visited, matAdj, n);
+	
+	tache_4(visited,matAdj,n);
 	
 
 }
@@ -120,7 +122,6 @@ void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
 		}cout << endl;
 	}cout << endl;
 		
-	tache_4(visited, matAdj, n, sepp);
 }
 
 void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& visited, int n,vector<vector<int>>& sepp) {
@@ -144,15 +145,16 @@ void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& vi
 	}
 }
 
-void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<vector<int>>& sepp ){
+void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n){
 	
 	vector<double> distance_moyenne(n);
 	double moyenne(0);
-	for (int i(0); i < n; i++) {
-		visited[i] = false;						// Ré-init visited à false
-	}
 	
 	for(unsigned int i(0); i<visited.size(); ++i){
+		for(int i(0); i < n; i++){
+			visited[i] = false;						// Ré-init visited à false
+		}
+		vector<vector<int>>sepp;
 		vector<int>initDep(1);
 		initDep[0]=i;
 		
@@ -161,7 +163,8 @@ void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n, vector<v
 		for(unsigned int j(0); j<sepp.size();++j){
 			distance_moyenne[i]+= (sepp[i].size()*(j+1))/n-1;
 		}
-		moyenne+=distance_moyenne[i]/4;
+		moyenne+=distance_moyenne[i]/n;
+		sepp.clear();
 	}
 	
 	cout << moyenne;
