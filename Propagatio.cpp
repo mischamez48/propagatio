@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
@@ -16,13 +17,14 @@ void check(int i, vector<bool>& visited ,vector<vector<bool>> matAdj, int n);
 vector<vector<bool>> tache_1(unsigned int& n);
 vector<bool> tache_2(vector<vector<bool>>matAdj, int n);
 void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n);
-void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, int n);
+void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, int n, vector<vector<int>>& sepp);
 bool contains(vector<int> v, int x);
 void printMatrice(const vector<vector<bool>>& mat, int n);
 void printPbm(const vector<vector<bool>>& mat, int n);
 void DEBUG_ERR(const char x[]);
 void DEBUG(const char x[]);
 vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n);
+void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n);
 
 int main() {
 	unsigned int n(0);	// Colonnes
@@ -33,6 +35,9 @@ int main() {
 	vector<bool> visited = tache_2(matAdj, n);
 
 	tache_3(visited, matAdj, n);
+	
+	tache_4(visited,matAdj,n);
+	
 
 }
 
@@ -102,38 +107,77 @@ void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
 	}
 
 	vector<int> initDep(1);
+	vector<vector<int>> sepp;
 	initDep[0] = 0;								// Ensemble de départ contient noeud 0 uniquement
 
-	cout << "0";							//commence toujours pas le noed 0, donc afficher 0	
+	cout << "0";						//commence toujours pas le noed 0, donc afficher 0	
 
-	recursio(initDep, matAdj, visited, n);	//Appel de la récursion avec ensemble {0} de départ
+	recursio(initDep, matAdj, visited, n, sepp);	//Appel de la récursion avec ensemble {0} de départ
 
+	for (unsigned int i(0); i < sepp.size(); ++i) {
+		if(!(i==(sepp.size()-1))){
+				cout << endl;
+		}
+		for (unsigned j(0); j < sepp[i].size(); ++j) {
+			cout << sepp[i][j];
+			if(!(j==(sepp.size()))){
+				cout << " ";
+			}
+		}cout << endl;
+	}
 		
 }
 
-void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, int n) {
-	if (dep.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
-		vector<int> tmp;						// Ensemble temporaire
-		cout << endl;
-		for (unsigned int i(0); i < dep.size(); ++i) {
-			visited[dep[i]] = true;				// Ligne du noeud dans l'ensemble de départ à été visité
+void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& visited, int n,vector<vector<int>>& sepp) {
+	if (depart.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
+		vector<int> arrivee;						// Ensemble temporaire
+		for (unsigned int i(0); i < depart.size(); ++i) {
+			visited[depart[i]] = true;				// Ligne du noeud dans l'ensemble de départ à été visité
 			for (int j(0); j < n; j++) {
-				if (matAdj[dep[i]][j] == true && visited[j] == false && !contains(dep, j)) {		
-					tmp.push_back(j);			// On met le noeud dans l'ensemble temporaire
+				if (matAdj[depart[i]][j] == true && visited[j] == false && !contains(depart, j)) {		
+					arrivee.push_back(j);			// On met le noeud dans l'ensemble temporaire
 					visited[j]= true;
 				}
 			}
 		}
-		sort(tmp.begin(), tmp.end());
-		for(unsigned int i(0); i<tmp.size(); ++i){
-			cout << tmp[i];
-			if ( !(i==(tmp.size()-1))){
-				cout << " ";
-			}
+		sort(arrivee.begin(), arrivee.end());
+		if(arrivee.size()!=0){
+		sepp.push_back(arrivee);
+		recursio(arrivee, matAdj, visited, n, sepp);	// On rappelle la fonction avec l'ensemble temporaire
 		}
-		recursio(tmp, matAdj, visited, n);	// On rappelle la fonction avec l'ensemble temporaire
+		
 	}
 }
+
+void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n){
+	
+	vector<double> distance_moyenne(n);
+	double moyenne(0);
+	
+	for(unsigned int i(0); i<visited.size(); ++i){
+		for(int i(0); i < n; i++){
+			visited[i] = false;						// Ré-init visited à false
+		}
+		vector<vector<int>>sepp;
+		vector<int>initDep(1);
+		initDep[0]=i;
+		
+		recursio(initDep, matAdj, visited, n, sepp);
+		
+		double tmp;
+		for(unsigned int j(0); j<sepp.size();++j){
+			tmp=(sepp[j].size()*(j+1));
+			distance_moyenne[i]+=(tmp/(n-1));
+			tmp=0;
+		}
+		moyenne+=distance_moyenne[i]/n;
+		sepp.clear();
+	}
+	cout <<fixed << setprecision(6) << moyenne<< endl;
+	
+	
+}
+
 
 
 
