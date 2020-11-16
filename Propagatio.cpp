@@ -13,18 +13,18 @@ const string IRREGULAR_CONTENT("Matrix description with incorrect content");
 const string DISCONNECTED_GRAPH("Matrix corresponds to a disconnected graph");
 
 vector<vector<bool>>lire_matrice(int n);
-void check(int i, vector<bool>& visited ,vector<vector<bool>> matAdj, int n);
+void check(int i, vector<bool>& visited ,const vector<vector<bool>>& matAdj, int n);
 vector<vector<bool>> tache_1(unsigned int& n);
-vector<bool> tache_2(vector<vector<bool>>matAdj, int n);
-void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n);
-void recursio(vector<int>& dep, vector<vector<bool>> matAdj, vector<bool>& visited, int n, vector<vector<int>>& sepp);
+vector<bool> tache_2(const vector<vector<bool>>& matAdj, int n);
+void tache_3(const vector<vector<bool>>& matAdj, int n);
+void recursio(vector<int>& dep, const vector<vector<bool>>& matAdj, vector<bool>& visited, int n, vector<vector<int>>& sepp);
 bool contains(vector<int> v, int x);
 void printMatrice(const vector<vector<bool>>& mat, int n);
 void printPbm(const vector<vector<bool>>& mat, int n);
 void DEBUG_ERR(const char x[]);
 void DEBUG(const char x[]);
 vector<vector<bool>>construire_matAdj(const vector<vector<bool>>& MatInit, int n);
-void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n);
+void tache_4(const vector<vector<bool>>& matAdj, int n);
 
 int main() {
 	unsigned int n(0);	// Colonnes
@@ -32,11 +32,11 @@ int main() {
 
 	vector<vector<bool>>matAdj = tache_1(n);
 
-	vector<bool> visited = tache_2(matAdj, n);
+	tache_2(matAdj, n);
 
-	tache_3(visited, matAdj, n);
+	tache_3(matAdj, n);
 	
-	tache_4(visited,matAdj,n);
+	tache_4(matAdj,n);
 	
 
 }
@@ -72,7 +72,7 @@ vector<vector<bool>> tache_1(unsigned int& n) {
 	return construire_matAdj(lire_matrice(n), n);
 }
 
-vector<bool> tache_2(vector<vector<bool>> matAdj, int n) {
+vector<bool> tache_2(const vector<vector<bool>>& matAdj, int n) {
 	vector<bool> visited(n);				// Init tab visited
 	for (int i(0); i < n; i++) {
 		visited[i] = false;					// Tous les elems a false
@@ -101,26 +101,24 @@ vector<bool> tache_2(vector<vector<bool>> matAdj, int n) {
 	return visited;
 }
 
-void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
-	for (int i(0); i < n; i++) {
+void tache_3(const vector<vector<bool>>& matAdj, int n) {
+	vector<bool> visited(n);
+	/*for (int i(0); i < n; i++) {
 		visited[i] = false;						// Ré-init visited à false
-	}
+	}*/
 
 	vector<int> initDep(1);
 	vector<vector<int>> sepp;
 	initDep[0] = 0;								// Ensemble de départ contient noeud 0 uniquement
 
-	cout << "0";						//commence toujours pas le noed 0, donc afficher 0	
+	cout << "0" <<endl;						//commence toujours pas le noed 0, donc afficher 0	
 
 	recursio(initDep, matAdj, visited, n, sepp);	//Appel de la récursion avec ensemble {0} de départ
 
 	for (unsigned int i(0); i < sepp.size(); ++i) {
-		if(!(i==(sepp.size()-1))){
-				cout << endl;
-		}
 		for (unsigned j(0); j < sepp[i].size(); ++j) {
 			cout << sepp[i][j];
-			if(!(j==(sepp.size()))){
+			if(j<((sepp[i].size()-1))){
 				cout << " ";
 			}
 		}cout << endl;
@@ -128,7 +126,7 @@ void tache_3(vector<bool> visited, vector<vector<bool>> matAdj, int n) {
 		
 }
 
-void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& visited, int n,vector<vector<int>>& sepp) {
+void recursio(vector<int>& depart, const vector<vector<bool>>& matAdj, vector<bool>& visited, int n,vector<vector<int>>& sepp) {
 	if (depart.size() > 0) {						// Tant que l'ensemble de départ n'est pas vide : 
 		vector<int> arrivee;						// Ensemble temporaire
 		for (unsigned int i(0); i < depart.size(); ++i) {
@@ -149,8 +147,9 @@ void recursio(vector<int>& depart, vector<vector<bool>> matAdj, vector<bool>& vi
 	}
 }
 
-void tache_4(vector<bool>& visited, vector<vector<bool>> matAdj, int n){
+void tache_4(const vector<vector<bool>>& matAdj, int n){
 	
+	vector<bool> visited(n);
 	vector<double> distance_moyenne(n);
 	double moyenne(0);
 	
@@ -202,7 +201,7 @@ vector<vector<bool>>lire_matrice(int n) {
 	return matInit;									// Retourne la matrice du fichier pre-adj
 }
 
-void check(int i, vector<bool>& visited, vector<vector<bool>> matAdj, int n) {
+void check(int i, vector<bool>& visited, const vector<vector<bool>>& matAdj, int n) {
 	visited[i] = true;										// Passer ligne en vrai grace à la verification the initInt
 	for (int j = 0; j < n; j++) {
 		if (matAdj[i][j] == true && visited[j] == false) {	// Si on trouve un noeud voisin qui n'a pas été vérifié,
